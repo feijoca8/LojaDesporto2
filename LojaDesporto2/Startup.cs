@@ -34,6 +34,9 @@ namespace LojaDesporto2
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddControllersWithViews();
             services.AddRazorPages();
+
+            services.AddDbContext<LojaDesporto2BdContext>(options =>
+                    options.UseSqlServer(Configuration.GetConnectionString("LojaDesporto2BdContext")));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
