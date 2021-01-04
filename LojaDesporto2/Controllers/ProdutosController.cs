@@ -21,7 +21,7 @@ namespace LojaDesporto2.Controllers
 
         // GET: Produtos
         public async Task<IActionResult> Index()
-        {
+        {  
             return View(await _context.Produto.ToListAsync());
         }
 
