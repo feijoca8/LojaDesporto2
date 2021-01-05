@@ -26,11 +26,11 @@
             @Html.DisplayNameFor(model => model.Preco)
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.Preco)
+            @Html.DisplayFor(model => model.Preco) €
         </dd>
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.ProdutoId">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a class="btn btn-warning" asp-action="Edit" asp-route-id="@Model.ProdutoId">Edit</a> |
+    <a class="btn btn-secondary"Index">Back to List</a>
 </div>

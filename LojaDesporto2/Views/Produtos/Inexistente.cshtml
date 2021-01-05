@@ -1,0 +1,17 @@
+﻿
+@{
+    ViewData["Title"] = "Produto Inexistente";
+}
+
+
+<div class="card text-white bg-warning mb-3">
+    <div class="card-body">
+        <h5 class="card-title">@ViewBag.Title</h5>
+        <p class="card-text">O produto que selecionou já nao existe. Possivelmente alguem eliminou o mesmo.</p>
+    </div>
+    <div>
+        <a class="btn btn-primary" asp-action="Index">
+            Ver Lista de Produtos
+        </a>
+    </div>
+</div>

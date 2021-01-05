@@ -12,17 +12,17 @@ namespace LojaDesporto2.Controllers
 {
     public class ProdutosController : Controller
     {
-        private readonly LojaDesporto2BdContext _context;
+        private readonly LojaDesporto2BdContext bd;
 
         public ProdutosController(LojaDesporto2BdContext context)
         {
-            _context = context;
+            bd = context;
         }
 
         // GET: Produtos
         public async Task<IActionResult> Index()
         {  
-            return View(await _context.Produto.ToListAsync());
+            return View(await bd.Produto.ToListAsync());
         }
 
         // GET: Produtos/Details/5
@@ -33,11 +33,11 @@ namespace LojaDesporto2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+            var produto = await bd.Produto
+                .SingleOrDefaultAsync(m => m.ProdutoId == id);
             if (produto == null)
             {
-                return NotFound();
+                return View("Inexistente");
             }
 
             return View(produto);
@@ -56,14 +56,20 @@ namespace LojaDesporto2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("ProdutoId,Nome,Descricao,Preco")] Produto produto)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(produto);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                
+                return View(produto);
+
             }
-            return View(produto);
+            bd.Add(produto);
+            await bd.SaveChangesAsync();
+
+            @ViewBag.Mensagem = "Produto Adicionado com sucesso";
+            return View("Sucesso");
         }
+
+
 
         // GET: Produtos/Edit/5
         public async Task<IActionResult> Edit(int? id)
@@ -73,10 +79,10 @@ namespace LojaDesporto2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto.FindAsync(id);
+            var produto = await bd.Produto.FindAsync(id);
             if (produto == null)
             {
-                return NotFound();
+                return View("Inexistente");
             }
             return View(produto);
         }
@@ -97,21 +103,23 @@ namespace LojaDesporto2.Controllers
             {
                 try
                 {
-                    _context.Update(produto);
-                    await _context.SaveChangesAsync();
+                    bd.Update(produto);
+                    await bd.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
                     if (!ProdutoExists(produto.ProdutoId))
                     {
-                        return NotFound();
+                        return View("Eliminarinserir", produto);
                     }
                     else
                     {
-                        throw;
+                        ModelState.AddModelError("Erro", "Ocorreu um erro. Não foi possivel guardar o produto. Tente novamente e se o problema prosseguir contacte a assistência.");
+                        return View(produto);
                     }
                 }
-                return RedirectToAction(nameof(Index));
+                ViewBag.Mensagem = "Produto alterado com sucesso";
+                return View("Sucesso");
             }
             return View(produto);
         }
@@ -124,11 +132,12 @@ namespace LojaDesporto2.Controllers
                 return NotFound();
             }
 
-            var produto = await _context.Produto
-                .FirstOrDefaultAsync(m => m.ProdutoId == id);
+            var produto = await bd.Produto
+                .SingleOrDefaultAsync(p => p.ProdutoId == id);
             if (produto == null)
             {
-                return NotFound();
+                ViewBag.Mensagem = "O produto que estava a tentar apagar, foi eliminado por outra pessoa";
+                return View("Sucesso");
             }
 
             return View(produto);
@@ -139,15 +148,17 @@ namespace LojaDesporto2.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var produto = await _context.Produto.FindAsync(id);
-            _context.Produto.Remove(produto);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
+            var produto = await bd.Produto.FindAsync(id);
+            bd.Produto.Remove(produto);
+            await bd.SaveChangesAsync();
+
+            ViewBag.Mensagem = "O produto foi eliminado com sucesso.";
+            return View("Sucesso");
         }
 
         private bool ProdutoExists(int id)
         {
-            return _context.Produto.Any(e => e.ProdutoId == id);
+            return bd.Produto.Any(p => p.ProdutoId == id);
         }
     }
 }
