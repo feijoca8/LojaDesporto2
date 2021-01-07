@@ -13,6 +13,8 @@ namespace LojaDesporto2.Models
         [Required(ErrorMessage = "O Nome é obrigatorio")]
         [StringLength(200, MinimumLength = 4, ErrorMessage = "O nome deve de ter pelo menos 4 carateceres e nao deve de exceder os 200 carateres")]
         public string Nome { get; set; }
+
+       
         public string Descricao { get; set; }
         [Required(ErrorMessage = "Deve preencher o preço")]
         public decimal Preco { get; set; }

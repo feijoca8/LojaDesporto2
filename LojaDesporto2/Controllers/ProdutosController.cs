@@ -62,6 +62,11 @@ namespace LojaDesporto2.Controllers
                 return View(produto);
 
             }
+            if (produto.Preco <=0)
+            {
+                ModelState.AddModelError("Preco", "O preço deve de ser maior que zero.");
+                return View(produto);
+            }
             bd.Add(produto);
             await bd.SaveChangesAsync();
 
